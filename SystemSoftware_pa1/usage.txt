@@ -1,0 +1,1 @@
+This is the program that prints out the student number and average score when data provided.  prog1.c use Low-level I/O and prog2.c use High-level I/O
