@@ -51,17 +51,14 @@ int main()
   pthread_t p_thread[2];
   int thread_id;
   int status;
-  char p1[] = "thread1";
-  char p2[] = "thread2";
-
 
   //thread creation
-  thread_id = pthread_create(&p_thread[0], NULL, function1, (void *)p1);
+  thread_id = pthread_create(&p_thread[0], NULL, function1, (void *)"thread1");
   if(thread_id != 0) {
     fprintf(stderr, "thread creation failed.]n");
   }
 
-  thread_id = pthread_create(&p_thread[1], NULL, function2, (void *)p2);
+  thread_id = pthread_create(&p_thread[1], NULL, function2, (void *)"thread2");
   if(thread_id != 0) {
     fprintf(stderr, "thread creation failed.]n");
   }
