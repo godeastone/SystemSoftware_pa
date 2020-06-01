@@ -2,13 +2,14 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <sys/types.h>
-#include <unistd.h>
+#include <uniistd.h>
 
 void signal_handler(int sig_num)
 {
   printf("Received Signal :: Quit\n");
   sleep(2);
-  printf("After Signal Handler\nprogram end\n");
+  printf("After Signal Handler\n");
+  printf("program end\n");
   kill(getpid(), SIGINT);
 }
 
