@@ -18,14 +18,14 @@ int main(int argc, char *argv[])
   socklen_t size;
   int recv_length;
   char buffer[BUF_SIZE];
-
+/*
   host = gethostbyname("dongwon2");
   if(host) {
     fprintf(stderr, "NAME : %s \n", host->h_name);
   } else {
     fprintf(stderr, "NO host corresponding ip\n");
   }
-
+*/
   if((socket_fd = socket(PF_INET, SOCK_STREAM, 0)) == -1) {
     fprintf(stderr, "socket error!\n");
     exit(0);

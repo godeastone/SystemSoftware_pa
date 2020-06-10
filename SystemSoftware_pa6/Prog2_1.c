@@ -25,8 +25,12 @@ int main(int argc, char *argv[])
 
   for(int i = 0; i < 10; i++) {
     strcpy((char *)memory_segment, "System");
+    fprintf(stderr, "A : %s\n", (char *)memory_segment);
     sleep(1);
-    fprintf(stderr, "A : %s\n", memory_segment);
+  }
+
+  if(shmdt(memory_segment) == -1) {
+      fprintf(stderr, "shmdt failed\n");
   }
 
   return 0;

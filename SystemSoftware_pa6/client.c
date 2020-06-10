@@ -21,7 +21,7 @@ int main()
 
   memset((char *)&ser, '\0', sizeof(ser));
   ser.sun_family = AF_UNIX;
-  strcpy(sser.sun_path, SOCKET_NAME);
+  strcpy(ser.sun_path, SOCKET_NAME);
   len = sizeof(ser.sun_family) + strlen(ser.sun_path);
 
   if(connect(sd, (struct sockaddr *)&ser, len) < 0) {
