@@ -8,7 +8,7 @@
 #include <sys/sem.h>
 
 #define key 5678
-#define key_sem 123
+#define key_sema 1234
 
 static int SemID;
 
@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
       exit(0);
   }
 
-  if((SemID = semget(IPC_PRIVATE, 1, IPC_CREAT|0666)) == -1) {
+  if((SemID = semget((key_t)key_sema, 1, IPC_CREAT|0666)) == -1) {
     fprintf(stderr, "semget failed\n");
     exit(0);
   }

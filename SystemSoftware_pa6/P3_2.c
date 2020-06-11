@@ -12,48 +12,59 @@
 
 static int SemID;
 
-void p()
+void sem_lock(int sem_set_id)
 {
-  struct sembuf pbuf;
+  struct sembuf sem_op;
 
-  pbuf.sem_num = 0;
-  pbuf.sem_op = -1;
-  pbuf.sem_flg = SEM_UNDO;
+  sem_op.sem_num = 0;
+  sem_op.sem_op = -1;
+  sem_op.sem_flg = 0;
 
-  if(semop(SemID, &pbuf, 1) == -1) {
+  if(semop(sem_set_id, &sem_op, 1) == -1) {
     fprintf(stderr, "p-semop failed\n");
     exit(0);
   }
 }
 
-void v()
+void sem_unlock(int sem_set_id)
 {
-  struct sembuf vbuf;
+  struct sembuf sem_op;
 
-  vbuf.sem_num = 0;
-  vbuf.sem_op = 1;
-  vbuf.sem_flg = SEM_UNDO;
+  sem_op.sem_num = 0;
+  sem_op.sem_op = 1;
+  sem_op.sem_flg = 0;
 
-  if(semop(SemID, &vbuf, 1) == -1) {
+  if(semop(sem_set_id, &sem_op, 1) == -1) {
     fprintf(stderr, "v-semop failed\n");
     exit(0);
   }
 }
 
-union semun
-{
-  int val;
-  struct semid_ds *buf;
-  unsigned short int *array;
-};
 
 int main(int argc, char *argv[])
 {
+  union semun
+  {
+    int val;
+    struct semid_ds *buf;
+    unsigned short int *array;
+  }sem_val;
+
   int shmid;
   int key1, key2;
   void *memory_segment = NULL;
 
-  union semun sem_union;
+  if((SemID = semget((key_t)key_sema, 1, IPC_CREAT|0666)) == -1) {
+    fprintf(stderr, "semget failed\n");
+    exit(0);
+  }
+
+  sem_val.val = 1;
+
+  if(semctl(SemID, 0, SETVAL, sem_val) == -1) {
+    fprintf(stderr, "semctl failed\n");
+    exit(0);
+  }
 
   if((shmid = shmget((key_t)key, sizeof(char), IPC_CREAT | 0666)) == -1) {
     fprintf(stderr, "shmget failed\n");
@@ -65,28 +76,15 @@ int main(int argc, char *argv[])
       exit(0);
   }
 
-  if((SemID = semget((key_t)key_sema, 1, IPC_CREAT|0666)) == -1) {
-    fprintf(stderr, "semget failed\n");
-    exit(0);
-  }
-
-  //set semaphore value as 1
-  sem_union.val = 1;
-
-  if(semctl(SemID, 0, SETVAL, sem_union) == -1) {
-    fprintf(stderr, "semctl failed\n");
-    exit(0);
-  }
-
   for(int i = 0; i < 10; i++) {
-    p();
+    sem_lock(SemID);
     strcpy((char *)(memory_segment), "Prog");
     sleep(1);
     fprintf(stderr, "B : %s\n", (char *)memory_segment);
-    v();
+    sem_unlock(SemID);
   }
 
-  if(semctl(SemID, 0, IPC_RMID, sem_union) == -1) {
+  if(semctl(SemID, 0, IPC_RMID, sem_val) == -1) {
     fprintf(stderr, "semctl2 failed\n");
     exit(0);
   }

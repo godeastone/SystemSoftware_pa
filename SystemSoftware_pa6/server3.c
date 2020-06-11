@@ -19,6 +19,11 @@ int main(int argc, char *argv[])
   int recv_length;
   char buffer[BUF_SIZE], hbuf[30];
 
+  if((socket_fd = socket(PF_INET, SOCK_STREAM, 0)) == -1) {
+    fprintf(stderr, "socket error!\n");
+    exit(0);
+  }
+
   host_addr.sin_family = AF_INET;
   host_addr.sin_port = htons(PORT);
   host_addr.sin_addr.s_addr = htons(INADDR_ANY);
@@ -40,19 +45,19 @@ int main(int argc, char *argv[])
     exit(0);
   }
 
-  memset(&addr, 0, sizeof(addr));
-  addr.sin_addr.s_addr = inet_addr("112.214.171.22");
-  host = gethostbyaddr((char *)&(client_addr.sin_addr.s_addr), 4, AF_INET);
+//  memset(&addr, 0, sizeof(addr));
+//  addr.sin_addr.s_addr = inet_addr("112.214.171.22");
+  //host = gethostbyaddr((char *)&client_addr.sin_addr, 4, AF_INET);
 
-  fprintf(stderr, "Client INFO - Host Name : %s\n", host->h_name);
+ // fprintf(stderr, "Client INFO - Host Name : %s\n", host->h_name);
   fprintf(stderr, "Client INFO - IP Address : %s\n", inet_ntoa(client_addr.sin_addr));
   fprintf(stderr, "Client INFO - PORT : %d\n", ntohs(client_addr.sin_port));
 
   //strcpy(buffer, inet_ntoa(client_addr.sin_addr));
 
 
-  strcpy(buffer, "dongwon2");
-  send(accepted_fd, buffer, sizeof(buffer), 0);
+ // strcpy(buffer, "dongwon2");
+  //send(accepted_fd, buffer, sizeof(buffer), 0);
 
   strcpy(buffer, inet_ntoa(client_addr.sin_addr));
   send(accepted_fd, buffer, sizeof(buffer), 0);
